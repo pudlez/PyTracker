@@ -978,7 +978,9 @@ while True:
         logger.debug('Generating updated archive index')
 
         archive_index = '<html><head><title>DXX Tracker Archive</title>' \
-                        '</head><body>'
+                        '</head><body><div id="games" style="display: none;">'
+        short_archive_index = '<html><head><title>DXX Tracker Archive</title>' \
+                              '</head><body>'
         
         count = 0
 
@@ -991,9 +993,9 @@ while True:
                 if re.match(regex_string, i):
                     count += 1
                     archive_index += '<a href="./{0}">{0}</a><br>'.format(i)
+                    short_archive_index += '<a href="./{0}">{0}</a><br>'.format(i)
                 
                     if count == 100:
-                        short_archive_index = archive_index
                         short_archive_index += '<a href="./full.html">Show more games</a>'
                         short_archive_index += '</body></html>'
                     
@@ -1003,7 +1005,7 @@ while True:
                         else:
                             logger.debug('Error writing out archive index')
 
-        archive_index += '</body></html>'
+        archive_index += '</div><script>document.getElementById("games").style.display = "inherit";</script></body></html>'
 
         filename = 'tracker/archive/full.html'
         if my_write_file(archive_index, filename):
