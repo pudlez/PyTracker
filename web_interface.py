@@ -800,8 +800,11 @@ def build_html_footer(mode):
                       'archived ' \
                       '<a href="{0}/archive">here</a>.' \
                       '<br>Created and maintained by: ' \
-                      '<a href="mailto:arch@a.gnslr.us">Arch</a><br><br>' \
-                      '</td></tr>'.format(TRACKER_URL)
+                      '<a href="mailto:arch@a.gnslr.us">Arch</a>' \
+                      '<br>Hosting provided by PuDLeZ. Discord: PuDLeZ&#35;9992<br>' \
+                      '<br>Missions can be found on <a href="https://sectorgame.com/dxma/">DXMA</a><br>' \
+                      '<br><a href="https://twitter.com/dxxretro">Do you like tweets?</a><br>' \
+'</td></tr>'.format(TRACKER_URL)
 
         if ping_tracker(('127.0.0.1', 42420)):
             html_output += '<tr>' \
