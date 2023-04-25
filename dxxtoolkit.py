@@ -105,8 +105,12 @@ def dxx_process_unregister(data):
 
     return game_data
 
+# Redux protocol versions with game info length for d1 and d2
+REDUX_GAME_INFO_LEN = {30002:(557, 560)}
 
-def dxx_process_game_info_response(data, version):
+def dxx_process_game_info_response(data, version, proto):
+    is_x3up = False
+
     logger.debug('entered dxx_process_game_info_response')
 
     if len(data) == 73:
@@ -139,6 +143,7 @@ def dxx_process_game_info_response(data, version):
                          'IIIIIIIIBBBBBBBBHBBBBBBBBBBBBBBB')
         # player data and settings are mingled together, might change over time
         settings_offset = 76
+        is_x3up = True
     elif len(data) == 549 and version == 2:
         # d2 retro 1.4X3
         unpack_string = ('=BHHH9sBBBBB9sBBBBB9sBBBBB9sBBBBB9sBBBBB9sBBBBB9sBBBBB9sBBBBB9s'
@@ -148,6 +153,17 @@ def dxx_process_game_info_response(data, version):
                          'IIIIIIIIBBBBBBBBHBBBBBBBBBBBBBBBBBB')
         # player data and settings are mingled together, might change over time
         settings_offset = 76
+        is_x3up = True
+    elif proto in REDUX_GAME_INFO_LEN and len(data) == REDUX_GAME_INFO_LEN[proto][version - 1]:
+        # d1/d2 redux
+        unpack_string = ('=BHHH9sBBBBB9sBBBBB9sBBBBB9sBBBBB9sBBBBB9sBBBBB9sBBBBB9sBBBBB9s'
+                         'BBBBB9sBBBBB9sBBBBB9sBBBBB16s26s9sIBBBBBBBBBIHHHHH18sII'
+                         'IIIIIIhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh'
+                         'hhhhhhhhhhhhhhhhhhhhhhhHhhhhhhhhhhhhhhhhhhIIIII'
+                         'IIIIIIIIBBBBBBBBHBBBBBBBBBBBBBBBBBB')
+        unpack_string += 'B' * (len(data) - 546 - 3)
+        settings_offset = 76
+        is_x3up = True
     else:
         logger.error('Received game info response with incorrect length')
         return False
@@ -236,13 +252,13 @@ def dxx_process_game_info_response(data, version):
             game_data['born_burner'] = unpacked_data[settings_offset+145]
 
         # if this is d1 retro 1.4X3
-        if len(data) == 546 and version == 1:
+        if is_x3up and version == 1:
             game_data['dark_smarts'] = unpacked_data[settings_offset+145]
             game_data['low_vulcan'] = unpacked_data[settings_offset+146]
             game_data['allow_colors'] = unpacked_data[settings_offset+147]
 
         # if this is d2 retro 1.4X3
-        if len(data) == 549 and version == 2:
+        if is_x3up and version == 2:
             game_data['dark_smarts'] = unpacked_data[settings_offset+145]
             game_data['low_vulcan'] = unpacked_data[settings_offset+146]
             game_data['allow_colors'] = unpacked_data[settings_offset+147]
@@ -280,7 +296,7 @@ def dxx_process_game_info_response(data, version):
                 suicides_step += 9
 
         # d1/d2 retro 1.4X3, player data
-        elif len(data) == 546 or len(data) == 549:
+        elif is_x3up:
             for num in range(4, 52, 6):
                 plr_num = 'player{0}'.format(player_step)
                 game_data[plr_num + 'name'] = re.sub(r'[^a-zA-Z0-9-_]','',(unpacked_data[num].decode(errors='ignore').split('\x00', 1))[0])

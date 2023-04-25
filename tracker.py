@@ -169,7 +169,7 @@ def game_info_response(data, address):
     else:
         active_games[key]['pending_info_reqs'] = 0
 
-    game_data = dxx_process_game_info_response(data, active_games[key]['version'])
+    game_data = dxx_process_game_info_response(data, active_games[key]['version'], active_games[key]['netgame_proto'])
     if not game_data:
         logger.debug('Unable to handle game_info response')
         return False
@@ -301,7 +301,7 @@ def version_deny(address):
     # check the netgame protocol version to make sure we know how to decode
     # the output. If not, set the version to unknown so we use just game info
     # lite requests.
-    if game_data['netgame_proto'] in SUPPORTED_NETGAME_PROTO_VERSIONS:
+    if game_data['netgame_proto'] in SUPPORTED_NETGAME_PROTO_VERSIONS or my_proto_is_redux(game_data['netgame_proto']):
         active_games[key]['netgame_proto'] = game_data['netgame_proto']
         logger.debug('Netgame protocol for game ID {0} host by {1} '
              'set to {2}'.format(active_games[key]['game_id'],
