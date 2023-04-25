@@ -6,6 +6,7 @@ import os
 import socket
 import time
 import tweepy
+import dxxtoolkit
 
 logger = logging.getLogger('dxx_logger.my_functions')
 
@@ -122,3 +123,6 @@ def my_determine_joinable(flags, refuse_players):
         return 'Restricted'
     else:
         return 'Unknown'
+
+def my_proto_is_redux(proto):
+	return proto in dxxtoolkit.REDUX_GAME_INFO_LEN

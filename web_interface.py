@@ -266,6 +266,8 @@ def build_html_basic_stats(data, mode):
         variant = 'RETRO 1.4X6'
     elif data['netgame_proto'] == 2947:
         variant = 'RETRO 1.4X7'
+    elif my_proto_is_redux(data['netgame_proto']):
+        variant = 'REDUX'
     else:
         variant = 'UNKNOWN'
 
@@ -538,7 +540,7 @@ def build_html_detailed_stats(data, mode):
     html_output += '<br><b>Secondary Cap: </b>{0}'.format(var)
 
     # if retro 1.4, display this data
-    if data['netgame_proto'] == 2943 or data['netgame_proto'] == 2944 or data['netgame_proto'] == 2945 or data['netgame_proto'] == 2946 or data['netgame_proto'] == 2947:
+    if data['netgame_proto'] == 2943 or data['netgame_proto'] == 2944 or data['netgame_proto'] == 2945 or data['netgame_proto'] == 2946 or data['netgame_proto'] == 2947 or my_proto_is_redux(data['netgame_proto']):
 
         # low vulcan ammo proto
         if data['low_vulcan'] == 1:
@@ -553,7 +555,7 @@ def build_html_detailed_stats(data, mode):
             html_output += '<br><b>Custom Colors: </b> N'
 
     # if this is retro 1.4 AND Descent2, display this data
-    if (data['netgame_proto'] == 2943 or data['netgame_proto'] == 2944 or data['netgame_proto'] == 2945 or data['netgame_proto'] == 2946 or data['netgame_proto'] == 2947) and data['version'] == 2:
+    if (data['netgame_proto'] == 2943 or data['netgame_proto'] == 2944 or data['netgame_proto'] == 2945 or data['netgame_proto'] == 2946 or data['netgame_proto'] == 2947 or my_proto_is_redux(data['netgame_proto'])) and data['version'] == 2:
         # d1 weapons
         if data['original_d1_weapons'] == 1:
             html_output += '<br><b>D1 Style Weapons: </b> Y'
