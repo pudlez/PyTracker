@@ -271,14 +271,16 @@ def build_html_basic_stats(data, mode):
     else:
         variant = 'UNKNOWN'
 
+    cols = 6 if my_proto_is_redux(data['netgame_proto']) else 5
+
     if data['start_time'] > 0:
-        html_output += '<tr><td colspan=5 bgcolor=#D0D0D0 ><b>{0} - </b>' \
-                       'Start time: {1} GMT</td></tr>'.format(variant,
+        html_output += '<tr><td colspan={0} bgcolor=#D0D0D0 ><b>{1} - </b>' \
+                       'Start time: {2} GMT</td></tr>'.format(cols, variant,
                                            my_time(data['start_time']))
     else:
         html_output += '<tr>' \
-                       '<td colspan=5 bgcolor=#D0D0D0>' \
-                       '<b>{0}</b> - Not Started</td></tr>'.format(variant)
+                       '<td colspan={0} bgcolor=#D0D0D0>' \
+                       '<b>{1}</b> - Not Started</td></tr>'.format(cols, variant)
 
     # start row
     html_output += '<tr>'
@@ -401,6 +403,8 @@ def build_html_basic_stats(data, mode):
 
 def build_html_detailed_stats(data, mode):
     logger.debug('entered build_html_detailed_stats')
+
+    cols = 6 if my_proto_is_redux(data['netgame_proto']) else 5
 
     # start column
     html_output = '<td>'
@@ -567,18 +571,44 @@ def build_html_detailed_stats(data, mode):
     # end column
     html_output += '</td>'
 
+    if my_proto_is_redux(data['netgame_proto']):
+        # start column
+        html_output += '<td valign="top">'
+
+        # sixth column
+
+        html_output += '<b>Homing Rate: </b>{0}'.format(data['homing_update_rate'])
+
+        html_output += '<br><b>Retro Homing: </b>{0}'.format('Y' if data['constant_homing_speed'] else 'N')
+
+        html_output += '<br><b>Custom Mods: </b>{0}'.format('Y' if data['allow_custom_models_textures'] else 'N')
+
+        html_output += '<br><b>Reduced Flash: </b>{0}'.format('Y' if data['reduced_flash'] else 'N')
+
+        styles = ['Dupl', 'Depl', 'Drop', 'Spawn']
+        style = data['gauss_ammo_style']
+        html_output += '<br><b>{0} Ammo: </b>{1}'.format(
+            'Vulcan' if data['version'] == 1 else 'Gauss',
+            styles[style] if style < len(styles) else '?')
+
+        if data['version'] == 2:
+            html_output += '<br><b>No Splash Gauss: </b>{0}'.format('Y' if data['disable_gauss_splash'] else 'N')
+
+        # end column
+        html_output += '</td>'
+
     # end row
     html_output += '</tr>'
 
     # allowed items
     if (data['allowed_items'] != 8191 and data['allowed_items'] != 134217727):
         # blank line
-        html_output += '<tr><td colspan=5 bgcolor=#D0D0D0><b>Disallowed ' \
-                       'Items</b></td></tr>'
+        html_output += '<tr><td colspan={0} bgcolor=#D0D0D0><b>Disallowed ' \
+                       'Items</b></td></tr>'.format(cols)
 
         html_output += '<tr>' \
-                       '<td colspan=5>' \
-                       '<table style=width:100% align=center cellspacing=0>'
+                       '<td colspan={0}>' \
+                       '<table style=width:100% align=center cellspacing=0>'.format(cols)
 
         # find out which items are enabled / disabled
         # if this is d1, only do the first 13 items, if d2, do them all
@@ -599,20 +629,20 @@ def build_html_detailed_stats(data, mode):
     # print the team score board if this is a team game
     if data['team_vector'] > 0:
         # blank line
-        html_output += '<tr><td colspan=5 bgcolor=#D0D0D0><b>Team Score ' \
-                       'Board</b></td></tr>'
+        html_output += '<tr><td colspan={0} bgcolor=#D0D0D0><b>Team Score ' \
+                       'Board</b></td></tr>'.format(cols)
 
         # start row
         html_output += '<tr>'
 
         # start player table
-        html_output += '<td colspan=5>' \
+        html_output += '<td colspan={0}>' \
                        '<table style=width:100% cellspacing=0>' \
                        '<tr>' \
                        '<td style=width:25%>Team</td>' \
                        '<td style=width:25%>Kills</td>' \
                        '<td style=width:25%></td>' \
-                       '<td style=width:25%></td></tr>'
+                       '<td style=width:25%></td></tr>'.format(cols)
 
         # display the teams in sorted order
         if data['team0_kills'] >= data['team1_kills']:
@@ -635,14 +665,14 @@ def build_html_detailed_stats(data, mode):
         html_output += '</tr>'
 
     # blank line
-    html_output += '<tr><td colspan=5 bgcolor=#D0D0D0><b>Score ' \
-                   'Board</b></td></tr>'
+    html_output += '<tr><td colspan={0} bgcolor=#D0D0D0><b>Score ' \
+                   'Board</b></td></tr>'.format(cols)
 
     # start row
     html_output += '<tr>'
 
     # start player table
-    html_output += '<td colspan=5>' \
+    html_output += '<td colspan={0}>' \
                    '<table style=width:100% cellspacing=0>' \
                    '<tr>' \
                    '<td>Player</td>' \
@@ -650,7 +680,7 @@ def build_html_detailed_stats(data, mode):
                    '<td>Deaths</td>' \
                    '<td>Suicides</td>' \
                    '<td>Kill/Death Ratio</td>' \
-                   '<td>Time in Game</td>'
+                   '<td>Time in Game</td>'.format(cols)
 
     # end row
     html_output += '</tr>'
@@ -727,16 +757,16 @@ def build_html_detailed_stats(data, mode):
     html_output += '</tr>'
 
     # blank line
-    html_output += '<tr><td colspan=5 bgcolor=#D0D0D0><b>Detailed Score ' \
-                   'Board</b></td></tr>'
+    html_output += '<tr><td colspan={0} bgcolor=#D0D0D0><b>Detailed Score ' \
+                   'Board</b></td></tr>'.format(cols)
 
     # start row
     html_output += '<tr>'
 
     # start player table
-    html_output += '<td colspan=5>' \
+    html_output += '<td colspan={0}>' \
                    '<table style=width:100% cellspacing=0>' \
-                   '<tr><td style=width:10%>&nbsp;</td>'
+                   '<tr><td style=width:10%>&nbsp;</td>'.format(cols)
 
     # print kill table header
     for x in range(0, 8):

@@ -105,8 +105,8 @@ def dxx_process_unregister(data):
 
     return game_data
 
-# Redux protocol versions with game info length for d1 and d2
-REDUX_GAME_INFO_LEN = {30002:(557, 560)}
+def dxx_proto_is_redux(proto):
+    return proto >= 30002 and proto <= 31000
 
 def dxx_process_game_info_response(data, version, proto):
     is_x3up = False
@@ -154,7 +154,7 @@ def dxx_process_game_info_response(data, version, proto):
         # player data and settings are mingled together, might change over time
         settings_offset = 76
         is_x3up = True
-    elif proto in REDUX_GAME_INFO_LEN and len(data) == REDUX_GAME_INFO_LEN[proto][version - 1]:
+    elif dxx_proto_is_redux(proto) and len(data) >= (557 if version == 1 else 560):
         # d1/d2 redux
         unpack_string = ('=BHHH9sBBBBB9sBBBBB9sBBBBB9sBBBBB9sBBBBB9sBBBBB9sBBBBB9sBBBBB9s'
                          'BBBBB9sBBBBB9sBBBBB9sBBBBB16s26s9sIBBBBBBBBBIHHHHH18sII'
@@ -265,6 +265,17 @@ def dxx_process_game_info_response(data, version, proto):
             game_data['born_burner'] = unpacked_data[settings_offset+148]
             game_data['gauss_ammo_style'] = unpacked_data[settings_offset+149]
             game_data['original_d1_weapons'] = unpacked_data[settings_offset+150]
+
+        if dxx_proto_is_redux(proto):
+            redux_settings_offset = settings_offset + (153 if version == 2 else 150)
+            game_data['homing_update_rate'] = unpacked_data[redux_settings_offset]
+            game_data['constant_homing_speed'] = unpacked_data[redux_settings_offset+1]
+            game_data['allow_custom_models_textures'] = unpacked_data[redux_settings_offset+2]
+            game_data['reduced_flash'] = unpacked_data[redux_settings_offset+3]
+            if version == 1:
+                game_data['gauss_ammo_style'] = unpacked_data[redux_settings_offset+4]
+            else:
+                game_data['disable_gauss_splash'] = unpacked_data[redux_settings_offset+4]
 
         # player data offsets
         player_step = 0
