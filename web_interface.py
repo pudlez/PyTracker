@@ -268,6 +268,10 @@ def build_html_basic_stats(data, mode):
         variant = 'RETRO 1.4X7'
     elif my_proto_is_redux(data['netgame_proto']):
         variant = 'REDUX'
+        if data['netgame_proto'] != 30002: # 30002 didn't use version fields yet
+            variant += ' {0}.{1}'.format(data['release_major'], data['release_minor'])
+            if data['release_micro']:
+                variant += '.{0}'.format(data['release_micro'])
     else:
         variant = 'UNKNOWN'
 
@@ -374,18 +378,7 @@ def build_html_basic_stats(data, mode):
     html_output += '<br><b>Difficulty: </b>{0}'.format(var)
 
     # version
-    var = ''
-    if data['version'] == 1:
-        var = 'D1 {0}.{1}.{2}'.format(str(data['release_major']),
-                                      str(data['release_minor']),
-                                      str(data['release_micro']))
-    elif data['version'] == 2:
-        var = 'D2 {0}.{1}.{2}'.format(str(data['release_major']),
-                                      str(data['release_minor']),
-                                      str(data['release_micro']))
-    else:
-        var = 'Unknown'
-    html_output += '<br><b>Version: </b>{0}'.format(var)
+    html_output += '<br><b>Version: </b>D{0}'.format(data['version'])
 
     # end column
     html_output += '</td>'

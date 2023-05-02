@@ -12,13 +12,7 @@ import time
 
 
 def check_version(major, minor, micro):
-    logger.debug('entered check_version')
-    if (major, minor, micro) != (MAJOR_VERSION, MINOR_VERSION, MICRO_VERSION):
-        logger.error('Version mismatch')
-        return False
-    else:
-        logger.debug('Version match')
-        return True
+    return True # support any version to use it for source port version
 
 
 def active_game_check(key):
@@ -55,6 +49,12 @@ def register_request(data, address):
     # make sure we're talking the same tracker protocol version
     if TRACKER_PROTOCOL_VERSION != game_data['tracker_ver']:
         logger.error('Received register with incorrect tracker '
+                     'version, dropping')
+        return False
+
+    # make sure game version is valid
+    if game_data['version'] != 1 and game_data['version'] != 2:
+        logger.error('Received register with incorrect game '
                      'version, dropping')
         return False
 
@@ -145,9 +145,13 @@ def game_info_request(req_type, key):
 
     address = (active_games[key]['ip'], active_games[key]['port'])
 
-    dxx_send_game_info_request(active_games[key]['version'], req_type,
-                               active_games[key]['netgame_proto'],
-                               address, active_games[key]['socket'])
+    active_game = active_games[key]
+    dxx_send_game_info_request(active_game['version'], req_type,
+                               active_game['netgame_proto'],
+                               address, active_game['socket'],
+                               active_game['release_major'],
+                               active_game['release_minor'],
+                               active_game['release_micro'])
 
     active_games[key]['pending_info_reqs'] += 1
 
@@ -559,9 +563,6 @@ MAX_PLAYERS = 8
 CALLSIGN_LENGTH = 8
 NETGAME_NAME_LENGTH = 15
 MISSION_NAME_LENGTH = 25
-MAJOR_VERSION = 0
-MINOR_VERSION = 58
-MICRO_VERSION = 1
 SUPPORTED_NETGAME_PROTO_VERSIONS = (2130, 2131, 2943, 2944, 2945, 2946, 2947)
 TRACKER_PROTOCOL_VERSION = 0
 
