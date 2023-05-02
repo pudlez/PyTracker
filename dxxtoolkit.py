@@ -10,9 +10,6 @@ import struct
 logger = logging.getLogger('dxx_logger.dxxtoolkit')
 
 # constants
-MAJOR_VERSION = 0
-MINOR_VERSION = 58
-MICRO_VERSION = 1
 OPCODE_REGISTER = 0
 OPCODE_UNREGISTER_OR_VERSION_DENY = 1
 OPCODE_GAME_LIST_REQUEST = 2
@@ -440,18 +437,19 @@ def dxx_send_register_response(address, socket_):
 
 
 def dxx_send_game_info_request(version, req_type, netgame_proto_version,
-                               address, socket_):
+                               address, socket_,
+                               release_major, release_minor, release_micro):
     logger.debug('entered dxx_send_game_info_request')
 
     request_id = 'D{0}XR'.format(version).encode()
 
     # send either a lite_req and a full req depending on the type
     if req_type == 0:
-        buf = struct.pack('=B4sHHH', 4, request_id, MAJOR_VERSION,
-                          MINOR_VERSION, MICRO_VERSION)
+        buf = struct.pack('=B4sHHH', 4, request_id, release_major,
+                          release_minor, release_micro)
     elif req_type == 1:
-        buf = struct.pack('=B4sHHHH', 2, request_id, MAJOR_VERSION,
-                          MINOR_VERSION, MICRO_VERSION, netgame_proto_version)
+        buf = struct.pack('=B4sHHHH', 2, request_id, release_major,
+                          release_minor, release_micro, netgame_proto_version)
     else:
         logger.error('Unknown request type')
         return False
