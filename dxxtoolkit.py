@@ -103,7 +103,7 @@ def dxx_process_unregister(data):
     return game_data
 
 def dxx_proto_is_redux(proto):
-    return proto >= 30002 and proto <= 31000
+    return proto and proto != 'unknown' and proto >= 30002 and proto <= 31000
 
 def dxx_process_game_info_response(data, version, proto):
     is_x3up = False
