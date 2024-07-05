@@ -826,11 +826,11 @@ def build_html_footer(mode):
                       '<br><br>Games monitored by this tracker are ' \
                       'archived ' \
                       '<a href="{0}/archive">here</a>.' \
-                      '<br>Created and maintained by: ' \
-                      '<a href="mailto:arch@a.gnslr.us">Arch</a>' \
-                      '<br>Hosting provided by PuDLeZ. Discord: PuDLeZ&#35;9992<br>' \
                       '<br>Missions can be found on <a href="https://sectorgame.com/dxma/">DXMA</a><br>' \
-                      '<br><a href="https://twitter.com/dxxretro">Do you like tweets?</a><br>' \
+                      '<br>Created by: ' \
+                      '<a href="mailto:arch@a.gnslr.us">Arch</a>' \
+                      '<br>Hosting provided by PuDLeZ. Discord: PuDLeZ<br>' \
+                      '<br>Contributors listed on the <a href="https://github.com/pudlez/PyTracker">GitHub Repo<br><br>' \
 '</td></tr>'.format(TRACKER_URL)
 
         if ping_tracker(('127.0.0.1', 42420)):
@@ -862,8 +862,10 @@ def build_html_footer(mode):
               '<tr><td><font size=2>Click ' \
               '<a href="{0}/archive">here</a> to go back to the archived games list.' \
               '<br>Click <a href="{0}">here</a> to go back to the main page.' \
-              '<br><br>Created and maintained by: ' \
+              '<br><br>Created by: ' \
               '<a href="mailto:arch@a.gnslr.us">Arch</a>' \
+              '<br>Hosting provided by PuDLeZ. Discord: PuDLeZ<br>' \
+              '<br>Contributors listed on the <a href="https://github.com/pudlez/PyTracker">GitHub Repo<br>' \
               '</td></tr>'.format(TRACKER_URL)
 
     html_output += '</font></table><br></td><td style=width:10% align=right></td></tr></table></body></html>'

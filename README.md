@@ -1,9 +1,17 @@
 PyTracker
 =========
-PyTracker is a reverse-engineered version of the DXX Rebirth Tracker, written 
-in python. I wrote this using the PyCharm python IDE on top of Python 3.4. I've 
-tested it down to Python 3.2 and it worked well there. I have not tested it on 
-python2.x.
+PyTracker is a reverse-engineered version of the DXX Rebirth Tracker, written in python. 
+Arch wrote this using the PyCharm python IDE on top of Python 3.4 and tested it down to Python 3.2
+
+PuDLeZ took over hosting it on March 1, 2020. The tracker is currently using Python 3.8 but will soon be targeting Python 3.12
+
+Contributers
+============
+* [Arch](https://github.com/adam2104)
+* [Roncli](https://github.com/roncli)
+* [PuDLeZ](https://github.com/pudlez)
+* [Arne](https://github.com/arbruijn)
+
 
 Files
 -----
