@@ -313,7 +313,7 @@ def version_deny(address):
                                    active_games[key]['netgame_proto']))
     else:
         active_games[key]['netgame_proto'] = 'unknown'
-        logger.debug('Unknown Netgame protocol for game ID {0} host by {1}'.
+        logger.debug('Unknown Netgame protocol for game ID {0} host by {1} is set to {game_data["netgame_proto"]}'.
                      format(active_games[key]['game_id'], key))
 
 
