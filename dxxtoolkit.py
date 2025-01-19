@@ -265,9 +265,11 @@ def dxx_process_game_info_response(data, version, proto):
             game_data['original_d1_weapons'] = unpacked_data[settings_offset+150]
 
         if dxx_proto_is_redux(proto):
+            sub_proto = proto % 1000;
             redux_settings_offset = settings_offset + (153 if version == 2 else 150)
             game_data['homing_update_rate'] = unpacked_data[redux_settings_offset]
-            game_data['constant_homing_speed'] = unpacked_data[redux_settings_offset+1]
+            game_data['constant_homing_speed'] = unpacked_data[redux_settings_offset+1] if sub_proto < 5 else False
+            game_data['remote_hit_spark'] = unpacked_data[redux_settings_offset+1] if sub_proto >= 5 else False
             game_data['allow_custom_models_textures'] = unpacked_data[redux_settings_offset+2]
             game_data['reduced_flash'] = unpacked_data[redux_settings_offset+3]
             if version == 1:

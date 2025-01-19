@@ -565,6 +565,8 @@ def build_html_detailed_stats(data, mode):
     html_output += '</td>'
 
     if my_proto_is_redux(data['netgame_proto']):
+        sub_proto = data['netgame_proto'] % 1000;
+    
         # start column
         html_output += '<td valign="top">'
 
@@ -572,7 +574,10 @@ def build_html_detailed_stats(data, mode):
 
         html_output += '<b>Homing Rate: </b>{0}'.format(data['homing_update_rate'])
 
-        html_output += '<br><b>Retro Homing: </b>{0}'.format('Y' if data['constant_homing_speed'] else 'N')
+        if sub_proto < 5:
+            html_output += '<br><b>Retro Homing: </b>{0}'.format('Y' if data['constant_homing_speed'] else 'N')
+        else:
+            html_output += '<br><b>Confirmed Sparks: </b>{0}'.format('Y' if data['remote_hit_spark'] else 'N')
 
         html_output += '<br><b>Custom Mods: </b>{0}'.format('Y' if data['allow_custom_models_textures'] else 'N')
 
