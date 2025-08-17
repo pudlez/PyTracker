@@ -268,6 +268,8 @@ def build_html_basic_stats(data, mode):
         variant = 'RETRO 1.4X7'
     elif my_proto_is_redux(data['netgame_proto']):
         variant = 'REDUX'
+        if 32000 <= data['netgame_proto'] <= 33000:
+            variant = 'SNG'
         if data['netgame_proto'] != 30002: # 30002 didn't use version fields yet
             variant += ' {0}.{1}'.format(data['release_major'], data['release_minor'])
             if data['release_micro']:
